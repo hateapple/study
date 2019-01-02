@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 public class BizAspect{
      @Pointcut("@annotation(com.hateapple.myspringboot.base.aspect.CrateLog)")
      public void excudeService(){
-
      }
 
      @Around("excudeService()")
