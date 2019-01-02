@@ -1,6 +1,5 @@
 package com.hateapple.myspringboot.base.interceptor;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;

@@ -8,7 +8,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 public class MyspringbootApplication {
 
     public static void main(String[] args) {
-        System.out.println("spring boot ok !");
         SpringApplication.run(MyspringbootApplication.class, args);
     }
 

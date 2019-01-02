@@ -1,5 +1,6 @@
 package com.hateapple.myspringboot.base.controller;
 
+import com.hateapple.myspringboot.base.aspect.CrateLog;
 import com.hateapple.myspringboot.base.domain.Student;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,6 +17,7 @@ public class InterController {
 
     @RequestMapping("/test")
     @ResponseBody
+    @CrateLog
     public Student test(HttpServletRequest request, HttpServletResponse response, ModelAndView modelAndView) throws IOException {
          Student student = new Student();
          student.setName((String)request.getAttribute("name"));
