@@ -3,7 +3,9 @@ package com.hateapple.myspringboot.base.sort;
 public class HeapSort {
 
     public static void initHeap(int[] array){
+        //从右向左找到第一个非叶子节点下标
         int lastParentIndex = array.length/2 - 1;
+
         for(int index = lastParentIndex; index>=0; index--){
                 reBuild(index, array, array.length);
         }
@@ -11,9 +13,9 @@ public class HeapSort {
 
     //构建大顶堆/小顶堆
     public static void reBuild(int parentIndex, int[] array, int arrayLength){
-        int L = parentIndex*2 + 1;
-        int R = L + 1;
-        int maxNodeIndex = -1;
+        int L = parentIndex*2 + 1;//左孩子下标
+        int R = L + 1;//右孩子下标
+        int maxNodeIndex = -1;//左右孩子中较大元素的下标
 
         //没有子节点
         if(L >= arrayLength && R>=arrayLength){
@@ -39,7 +41,9 @@ public class HeapSort {
         if(array[parentIndex] >= array[maxNodeIndex]){
             return ;
         }else{
+            //交换父节点和较大孩子元素
             swap(parentIndex, maxNodeIndex, array);
+            //从孩子节点开始重建堆
             reBuild(maxNodeIndex, array, arrayLength);
         }
 
