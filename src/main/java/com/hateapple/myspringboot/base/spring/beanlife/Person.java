@@ -22,24 +22,18 @@ public class Person implements BeanFactoryAware, BeanNameAware, InitializingBean
     @Override
     public void setBeanName(String s) {
         System.out.println("[BeanNameAware]");
-
     }
-
     @Override
     public void destroy() throws Exception {
         System.out.println("[DisposableBean]");
-
     }
-
     @Override
     public void afterPropertiesSet() throws Exception {
         System.out.println("[InitializingBean]");
     }
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         System.out.println("[注入属性] 注入name属性" + name);
         this.name = name;
