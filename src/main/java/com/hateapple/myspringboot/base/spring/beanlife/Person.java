@@ -10,7 +10,7 @@ public class Person implements BeanFactoryAware, BeanNameAware, InitializingBean
     private String name = "默认";
     private Integer age = 0;
 
-    Person(){
+    public Person(){
         System.out.println("[构造器]调用Person的构造器实例化");
     }
 
