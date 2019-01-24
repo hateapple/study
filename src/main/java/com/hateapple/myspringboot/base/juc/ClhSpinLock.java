@@ -1,8 +1,6 @@
 package com.hateapple.myspringboot.base.juc;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Condition;
 
 /**
  * 自旋锁
@@ -18,11 +16,18 @@ public class ClhSpinLock {
 
     ClhSpinLock(){
         //初始化当前节点，默认locked为false
-        this.node = ThreadLocal.withInitial(() -> new Node(Thread.currentThread()));
-        this.prev = ThreadLocal.withInitial(() -> null);
+        this.node = new ThreadLocal<Node>(){
+             protected Node initialValue(){
+                 return new Node(Thread.currentThread());
+             }
+        };
+        this.prev = new ThreadLocal<>();
     }
 
      public void lock(){
+        //get()方法，如果当前线程对应的ThreadLocalMap不存在会调用setInitialValue
+         //获取初始化的ThreadLocalMap，其中会通过initialValue获取到value,即构造方法中重写的
+         //initalValue方法
         final Node node = this.node.get();
         node.locked = true;
         Node prev = this.tail.getAndSet(node);
@@ -55,17 +60,22 @@ public class ClhSpinLock {
     public static void main(String[] args) throws InterruptedException {
         final ClhSpinLock clhSpinLock = new ClhSpinLock();
         clhSpinLock.lock();
-        System.out.println("main lock");
-        for(int i=0;i<10;i++){
+
+        for(int i=0;i<5;i++){
             Thread thread = new Thread(() -> {
+
                 clhSpinLock.lock();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 clhSpinLock.unlock();
             });
             thread.setName(String.valueOf(i));
             thread.start();
             Thread.sleep(1000);
         }
-        System.out.println("main thread unlock!");
         clhSpinLock.unlock();
     }
 }
