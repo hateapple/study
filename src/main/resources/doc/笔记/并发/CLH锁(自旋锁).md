@@ -1,9 +1,12 @@
-package com.hateapple.myspringboot.base.juc;
+# 1.自旋锁的意义
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Condition;
+由于互斥锁需要阻塞线程，线程的挂起与恢复都需要从用户态切换到内核态中完成,这些操作会给系统的并发性带去很大压力。考虑到共享数据的锁状态只会持续很短一段时间，为了这段时间挂起、恢复线程很不值得，因此出现了自旋锁。顾名思义，等待获取锁的线程不停的自旋，直到能够获取到锁。
 
+
+
+# 2.CLH自旋锁
+
+```java
 /**
  * 自旋锁
  */
@@ -69,5 +72,7 @@ public class ClhSpinLock {
         clhSpinLock.unlock();
     }
 }
+```
+
 
 
