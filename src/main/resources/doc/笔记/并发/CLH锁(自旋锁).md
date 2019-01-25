@@ -1,5 +1,7 @@
 # 1.自旋锁的意义
 
+虚拟机对锁的一种优化；
+
 由于互斥锁需要阻塞线程，线程的挂起与恢复都需要从用户态切换到内核态中完成,这些操作会给系统的并发性带去很大压力。考虑到共享数据的锁状态只会持续很短一段时间，为了这段时间挂起、恢复线程很不值得，因此出现了自旋锁。顾名思义，等待获取锁的线程不停的自旋，直到能够获取到锁。
 
 
@@ -21,11 +23,18 @@ public class ClhSpinLock {
 
     ClhSpinLock(){
         //初始化当前节点，默认locked为false
-        this.node = ThreadLocal.withInitial(() -> new Node(Thread.currentThread()));
-        this.prev = ThreadLocal.withInitial(() -> null);
+        this.node = new ThreadLocal<Node>(){
+             protected Node initialValue(){
+                 return new Node(Thread.currentThread());
+             }
+        };
+        this.prev = new ThreadLocal<>();
     }
 
      public void lock(){
+        //get()方法，如果当前线程对应的ThreadLocalMap不存在会调用setInitialValue
+         //获取初始化的ThreadLocalMap，其中会通过initialValue获取到value,即构造方法中重写的
+         //initalValue方法
         final Node node = this.node.get();
         node.locked = true;
         Node prev = this.tail.getAndSet(node);
@@ -58,17 +67,22 @@ public class ClhSpinLock {
     public static void main(String[] args) throws InterruptedException {
         final ClhSpinLock clhSpinLock = new ClhSpinLock();
         clhSpinLock.lock();
-        System.out.println("main lock");
-        for(int i=0;i<10;i++){
+
+        for(int i=0;i<5;i++){
             Thread thread = new Thread(() -> {
+
                 clhSpinLock.lock();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 clhSpinLock.unlock();
             });
             thread.setName(String.valueOf(i));
             thread.start();
             Thread.sleep(1000);
         }
-        System.out.println("main thread unlock!");
         clhSpinLock.unlock();
     }
 }
